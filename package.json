@@ -1,0 +1,14 @@
+{
+	"name": "mrg",
+	"main": "./merge.js",
+	"author": "rolandpoulter",
+	"version": "0.0.1",
+	"keywords": [],
+	"homepage": "https://github.com/rolandpoulter/js-merge",
+	"repository": {"type": "git", "url": "git://github.com/rolandpoulter/js-merge"},
+	"description": "",
+	"contributors": [],
+	"dependencies": {},
+	"devDependencies": {"spc": ">= 0.0.1"},
+	"scripts": {"test": "node ./test.js"}
+}
