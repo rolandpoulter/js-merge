@@ -2,20 +2,18 @@
 
 "use strict";
 
-var toString = Object.prototype.toString,
-    isArray = Array.isArray;
+var toString = Object.prototype.toString;
 
-isArray = isArray || function (array) {
-	return toString.call(array) === '[object Array]';
-};
-
-function isObject (object) {
-	return toString.call(object) === '[object Object]';
+merge.toString = function (object) {
+	return toString.call(object);
 }
 
-merge.util = {
-	isArray: isArray,
-	isObject: isObject
+merge.isArray = function (array) {
+	return merge.toString(array) === '[object Array]';
+};
+
+merge.isObject = function (object) {
+	return merge.toString(object) === '[object Object]';
 };
 
 module.exports = merge;
@@ -23,40 +21,41 @@ module.exports = merge;
 function merge (receiver, giver) {
 	var key,
 	    index,
-	    length;
+	    length,
+	    isArray = merge.isArray,
+	    isObject = merge.isObject;
 
-	function assign (property) {
-		var value = giver[property],
-		    target = receiver[property];
-
-		function arrayAssign (value) {
-			if (value !== null || value !== undefined && !~target.indexOf(value)) {
-				target.push(value);
-			}
+	if (merge.isObject(giver)) {
+		for (key in giver) if (giver.hasOwnProperty(key)) {
+			merge.assign(receiver, giver, key);
 		}
 
-		if (isObject(value) && isObject(target)) {
+	} else if (merge.isArray(giver)) {
+		for (index = 0, length = giver.length; index < length; index += 1) {
+			merge.assign(receiver, giver, index);
+		}
+	}
+}
 
+merge.assign = function (receiver, giver, property) {
+	var value = giver[property],
+		  target = receiver[property];
+
+	if (merge.isObject(value) && merge.isObject(target)) {
 			merge(target, value);
 
-		} else if (isArray(target)) {
-			if (isArray(value)) value.forEach(arrayAssign);
+	} else if (merge.isArray(target)) {
+		if (merge.isArray(value)) value.forEach(function (value) {
+			merge.append(target, value);
+		});
 
-			else arrayAssign(value);
+		else merge.arrayAssign(target, value);
 
-		} else receiver[property] = value;
-	}
+	} else receiver[property] = value;
+};
 
-	if (isObject(giver)) {
-		for (key in giver) {
-			if (giver.hasOwnProperty(key)) {
-				assign(key);
-			}
-		}
-
-	} else if (isArray(giver)) {
-		for (index = 0, length = giver.length; index < length; index += 1) {
-			assign(index);
-		}
+merge.append = function (target, value) {
+	if (value !== null || value !== undefined && !~target.indexOf(value)) {
+		target.push(value);
 	}
 }
