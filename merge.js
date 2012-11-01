@@ -21,7 +21,7 @@ merge.enumerate = function (object, iterator, that) {
 			iterator.call(that, object[key], key, object);
 
 	} else if (isArray(object)) {
-		for (index = 0, length = giver.length; index < length; index += 1)
+		for (index = 0, length = object.length; index < length; index += 1)
 			iterator.call(that, object[index], index, object);
 	}
 };
