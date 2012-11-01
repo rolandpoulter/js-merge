@@ -2,7 +2,7 @@
 	"name": "mrg",
 	"main": "./merge.js",
 	"author": "rolandpoulter",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"keywords": [],
 	"homepage": "https://github.com/rolandpoulter/js-merge",
 	"repository": {"type": "git", "url": "git://github.com/rolandpoulter/js-merge"},

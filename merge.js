@@ -16,13 +16,14 @@ merge.enumerate = function (object, iterator, that) {
 	    index,
 	    length;
 
-	if (isObject(object))
+	if (isObject(object)) {
 		for (key in object) if (object.hasOwnProperty(key))
 			iterator.call(that, object[key], key, object);
 
-	else if (isArray(object))
+	} else if (isArray(object)) {
 		for (index = 0, length = giver.length; index < length; index += 1)
 			iterator.call(that, object[index], index, object);
+	}
 };
 
 
@@ -32,11 +33,11 @@ merge.assign = function (receiver, giver, property, iterator, that) {
 
 	if (safeApply(iterator, [value, property, receiver, giver], that)) return;
 
-	else if (merge.isObject(value) && merge.isObject(target))
-			merge(target, value);
+	else if (isObject(value) && isObject(target))
+			merge(target, value, iterator, that);
 
-	else if (merge.isArray(value) && merge.isArray(target))
-			merge(target, value);
+	else if (isArray(value) && isArray(target))
+			merge(target, value, iterator, that);
 
 	else receiver[property] = value;
 };
