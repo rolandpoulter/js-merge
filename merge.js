@@ -2,11 +2,13 @@
 
 module.exports = merge;
 
-function merge (receiver, giver, iterator, that) {
+function merge (receiver, giver, filter, that, _path) {
 	var assign = merge.assign;
 
+	_path = _path || '';
+
 	merge.enumerate(giver, function (_, key) {
-		assign(receiver, giver, key, iterator, that);
+		assign(receiver, giver, key, filter, that, _path);
 	});
 }
 
@@ -27,19 +29,23 @@ merge.enumerate = function (object, iterator, that) {
 };
 
 
-merge.assign = function (receiver, giver, property, iterator, that) {
+merge.assign = function (receiver, giver, property, filter, that, _path) {
 	var value = giver[property],
 	    target = receiver[property];
 
-	if (safeApply(iterator, [value, property, receiver, giver], that)) return;
+	if (safeApply(filter, [value, property, _path, receiver, giver], that)) return;
 
-	else if (isObject(value) && isObject(target))
-			merge(target, value, iterator, that);
+	_path = _path ? _path + '.' + property : property;
 
-	else if (isArray(value) && isArray(target))
-			merge(target, value, iterator, that);
+	if (isObject(value) && isObject(target)) {
+		merge(target, value, filter, that, _path);
 
-	else receiver[property] = value;
+	} else if (isArray(value) && isArray(target)) {
+		merge(target, value, filter, that, _path);
+
+	} else {
+		receiver[property] = value;
+	}
 };
 
 merge.append = function (target, value) {
